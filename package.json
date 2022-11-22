@@ -1,0 +1,15 @@
+{
+  "name": "storefront_capstone_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start":"node app.js"
+  },
+  "keywords": [],
+  "author": "Amalitech Services",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
