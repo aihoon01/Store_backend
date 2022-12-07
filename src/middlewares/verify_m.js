@@ -59,4 +59,16 @@ exports.userValidation = (req, res, next) => {
 
     const error = result[0].msg;
     res.status(401).send({success: false, message: error});
-}
+};
+
+exports.checkAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated) res.status(200);
+};
+
+exports.checkNotAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated) {
+        res.status(200)
+    } else {
+        res.status(404)
+    }
+};

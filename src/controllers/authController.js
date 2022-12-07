@@ -48,7 +48,7 @@ exports.logout = (req, res) => {
     req.logout(function(err) {
         if(err) return next(err)
     });
-    res.send("You have successully logged out");
+    res.status(200).send("You have successully logged out");
 };
 
 exports.authenticateUser = async (email, password, done) => {
