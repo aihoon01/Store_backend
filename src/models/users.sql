@@ -9,5 +9,7 @@ CREATE TABLE users(
     lastname VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role role NOT NULL
+    role role NOT NULL,
+    emailtoken VARCHAR(200),
+    isverified BOOLEAN NOT NULL
 );
