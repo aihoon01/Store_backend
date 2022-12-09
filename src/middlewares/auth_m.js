@@ -1,6 +1,6 @@
 const passport = require("passport");
 const passportJWT = require('passport-jwt');
-const { getUserById } = require("../services/userTable");
+const { getUserById, getUserByEmail } = require("../services/userServices");
 const cfg = require("../config/jwtConfig");
 const ExtractJwt = passportJWT.ExtractJwt;
 const Strategy = passportJWT.Strategy;
@@ -39,4 +39,16 @@ module.exports = function() {
             return passport.authenticate("jwt", cfg.jwtSession);
         }
     };
+};
+
+exports.verifyEmail = async(req, res, next) => {
+    try {
+        const user = await getUserByEmail(req.body.email);
+        console.log(user);
+        if (user.rows[0].isverified) {
+            next();
+        }
+    } catch (error) {
+        res.status(404).send("Please check your email to verify your account")
+    }
 };
