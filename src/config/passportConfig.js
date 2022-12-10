@@ -2,7 +2,6 @@ const LocalStrategy = require("passport-local").Strategy;
 
 const { authenticateUser } = require("../controllers/authController");
 const { getUserById } = require("../services/userServices");
-const { pool } = require("./dbConfig");
 
 function initialize(passport) {
     passport.use(new LocalStrategy({

@@ -9,22 +9,14 @@ exports.getUserByEmail = (email) => {
 }
 };
 
-exports.saveToDatabase = async (firstname, lastname, email, Password, role, emailtoken,isverified) => {
+exports.saveToDatabase = async (firstname, lastname, bname, email, Password, role) => {
     const hashed = await hashedPassword(Password);
 
-    return pool.query(`INSERT INTO users (firstname, lastname, email, password, role, emailtoken, isverified) VALUES($1, $2, $3, $4, $5, $6, $7) returning *`, [firstname, lastname, email, hashed, role, emailtoken, isverified])
+    return pool.query(`INSERT INTO users (firstname, lastname, bname, email, password, role) VALUES($1, $2, $3, $4, $5, $6) returning *`, [firstname, lastname, bname, email, hashed, role])
 };
 
 exports.getUserById = (id) => {
         return pool.query(`SELECT * FROM users WHERE id=$1`, [id]);
-}
-
-exports.getUserToken = (token) => {
-    return pool.query(`SELECT * FROM users WHERE emailtoken=$1`, [token]);
-}
-
-exports.verifyUserStatus=(email) => {
-    return pool.query(`UPDATE users SET emailtoken=Null, isverified=true WHERE email=$1`, [email]);
 };
 
 exports.resetUserPassword = async(password, email) => {

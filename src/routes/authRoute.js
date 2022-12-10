@@ -1,23 +1,27 @@
 const express = require("express");
-const { signUp, login, logout, verifyUser, resetPassword, reset } = require("../controllers/authController");
-const { validateUserSignUp, inputValidation, validateReset } = require("../middlewares/verify_m");
+const { signUp, logout, resetPassword, reset, access, verifytoken } = require("../controllers/authController");
+const { validateSignUp, inputValidation, validateReset, checkAuthenticated } = require("../middlewares/verify_m");
 const passport = require("passport");
-const { verifyEmail } = require("../middlewares/auth_m");
 
-const usersRouter = express.Router();
+const authRouter = express.Router();
 
-// signupRouter.use(check); 
-usersRouter.post('/users/register', validateUserSignUp, inputValidation, signUp);
+// signupRout 
+authRouter.post('/auth/register', validateSignUp, inputValidation, signUp);
+authRouter.get('/auth/register', checkAuthenticated, access);
+authRouter.get('/verify-email', verifytoken);
 
-usersRouter.post('/users/login', passport.authenticate("local"), verifyEmail, login)
+// loginRoute
+authRouter.post('/auth/login', passport.authenticate("local"), access);
+authRouter.get('/auth/login', checkAuthenticated, access);
 
-usersRouter.get('/users/logout', logout);
-usersRouter.get('/verify-email', verifyUser);
-usersRouter.post('/reset', resetPassword);
-usersRouter.post('/reset-password', validateReset, inputValidation, reset);
-usersRouter.get('/reset-password', (req, res) => {
-    res.status(200).send("You will be redirected shortly")
-});
+//logout
+authRouter.get('/auth/logout', logout);
+
+//Password Reset
+authRouter.post('/reset', resetPassword);
+authRouter.get('/reset-password', access);
+authRouter.post('/reset-password', validateReset, inputValidation, reset);
 
 
-module.exports = usersRouter;
+
+module.exports = authRouter;

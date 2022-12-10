@@ -1,13 +1,12 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const app = express();
-const usersRouter = require("./src/routes/authRoute");
-const auth = require("./src/middlewares/auth_m")();
+const authRouter = require("./src/routes/authRoute");
+// const auth = require("./src/middlewares/auth_m")();
 const passport = require("passport");
 const initializePassport = require("./src/config/passportConfig");
 const session = require("express-session");
 require("dotenv").config();
-
 
 
 // auth();
@@ -19,7 +18,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-app.use(auth.initialize());
+
+// app.use(auth.initialize());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 //API ROUTES
-app.use(usersRouter);
+app.use(authRouter);
   
 //Port config
 const PORT = process.env.PORT || 3000;

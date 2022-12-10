@@ -1,26 +1,28 @@
 const { check, validationResult } = require("express-validator");
 
-exports.validateUserSignUp = [
+exports.validateSignUp = [
     check("firstname")
         .trim()
-        .not()
-        .isEmpty()
-        .withMessage("First name is required!")
         .isLength({max: 20})
         .withMessage("First name cannot be more than 20 character!"),
 
     check("lastname")
         .trim()
-        .not()
-        .isEmpty()
-        .withMessage("Last name is required!")
         .isLength({max: 20})
         .withMessage("Last name cannot be more than 20 character!"),
+    
+    check("bname")
+        .trim()
+        .isLength({max: 100})
+        .withMessage("Business name cannot be more than 100 characters"),
     
     check("email")
         .normalizeEmail()
         .isEmail()
-        .withMessage("Invalid email!"),
+        .withMessage("Invalid email!")
+        .not()
+        .isEmpty()
+        .withMessage("Email is required"),
     
     check("password")
         .trim()
@@ -76,7 +78,7 @@ exports.validateReset =[
             }
             return true;
         })
-]
+];
 
 exports.inputValidation = (req, res, next) => {
     const result = validationResult(req).array();
@@ -88,13 +90,16 @@ exports.inputValidation = (req, res, next) => {
 };
 
 exports.checkAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated) res.status(200);
+    if (req.isAuthenticated) {
+        //res.redirect('dashboard') redirect to dashboard 
+    }
+    next()  //else next.
 };
 
 exports.checkNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated) {
-        res.status(200)
+        next()
     } else {
-        res.status(404)
+        //redirect to login because user is not authenticated to be in that endpoint.
     }
 };
