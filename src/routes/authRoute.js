@@ -5,17 +5,16 @@ const passport = require("passport");
 
 const authRouter = express.Router();
 
-// signupRout 
-authRouter.post('/auth/register', validateSignUp, inputValidation, signUp);
-authRouter.get('/auth/register', checkAuthenticated, access);
+// signupRoute 
+authRouter.post('/register', validateSignUp, inputValidation, signUp);
+// authRouter.get('/auth/register', access);
 authRouter.get('/verify-email', verifytoken);
 
 // loginRoute
-authRouter.post('/auth/login', passport.authenticate("local"), access);
-authRouter.get('/auth/login', checkAuthenticated, access);
+authRouter.post('/login', passport.authenticate("local"), access);
 
 //logout
-authRouter.get('/auth/logout', logout);
+authRouter.get('/logout', logout);
 
 //Password Reset
 authRouter.post('/reset', resetPassword);

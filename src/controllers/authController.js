@@ -1,9 +1,7 @@
-const { getUserByEmail, saveToDatabase, getUsersFromDatabase, getUserToken, verifyUserStatus, resetUserPassword, getUserById} = require("../services/userServices");
-const { check } = require("../middlewares/verify_m");
+const { getUserByEmail, saveToDatabase, resetUserPassword, getUserById} = require("../services/userServices");
 const { verifyHash } = require("../helpers/sys");
 const config = require("../config/jwtConfig");
 const jwt = require("jwt-simple");
-const crypto = require("crypto");
 const { transporter } = require("../config/mailConfig");
 const { jwtSecret } = require("../config/jwtConfig");
 
@@ -18,7 +16,7 @@ exports.signUp = async (req, res) => {
         if (emailCheck.rows.length > 0) {
             res.status(404).send("Email already exists!");
         } else {
-            res.status(200).send("Verification email has been sent to your email account. Login with your Email verification link");
+            res.status(201).send("Verification email has been sent to your email account. Login with your Email verification link");
 
             const payload = {
                 fname : firstname,
@@ -61,7 +59,7 @@ exports.signUp = async (req, res) => {
 
         }
     } catch (err) {
-        res.status(500);
+        res.status(500).send("Internal server problem");
     }
 };
 
