@@ -17,7 +17,7 @@ exports.signUp = async (req, res) => {
             res.status(404).send("Email already exists!");
         } else {
             res.status(201).send("Verification email has been sent to your email account. Login with your Email verification link");
-            unverifiedMail.push(email);
+            gencode = Math.
             const payload = {
                 fname : firstname,
                 lname : lastname,
@@ -61,6 +61,8 @@ exports.signUp = async (req, res) => {
     } catch (err) {
         res.status(500).send("Internal server problem");
     }
+    unverifiedMail.push(email);
+
 };
 
 exports.logout = (req, res) => {
@@ -77,9 +79,6 @@ exports.verifytoken = async (req, res) => {
         const payload= jwt.decode(token, jwtSecret);
         let { fname, lname, bname, email, password, role } = payload;
 
-        // Check if email exists in unverifiedMail
-      if (unverifiedMail.includes(email)) {
-
         //if token is verified proceed to storing details to database
         if (payload) {
         //Save Details to Database
@@ -90,7 +89,7 @@ exports.verifytoken = async (req, res) => {
     } else {
         res.status(404).send("Verification link expired");
     }
-}
+
     } catch(error) {
         res.status(500).send("Internal Server Problem");
     }
@@ -157,7 +156,6 @@ exports.resetPassword = async(req, res) => {
         })
     } 
     } catch (error) {
-        console.log(error)
         res.status(500).send("Internal Server Problem!")
     }
 };
@@ -188,7 +186,6 @@ exports.access = (req, res) => {
 
 exports.vCheck = (req, res, next) => {
     if (unverifiedMail.includes(req.body.email)) {
-        console.log(unverifiedMail)
         res.status(404).send("You need to verify your email first");
     } else {
         next()
