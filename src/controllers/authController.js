@@ -5,7 +5,7 @@ const jwt = require("jwt-simple");
 const { transporter } = require("../config/mailConfig");
 const { jwtSecret } = require("../config/jwtConfig");
 
-
+const unverifiedMail = [];
 //Signup Function
 exports.signUp = async (req, res) => {
 
@@ -17,7 +17,7 @@ exports.signUp = async (req, res) => {
             res.status(404).send("Email already exists!");
         } else {
             res.status(201).send("Verification email has been sent to your email account. Login with your Email verification link");
-
+            unverifiedMail.push(email);
             const payload = {
                 fname : firstname,
                 lname : lastname,
@@ -75,10 +75,13 @@ exports.verifytoken = async (req, res) => {
     try{
         const { token } = req.query;
         const payload= jwt.decode(token, jwtSecret);
+        let { fname, lname, bname, email, password, role } = payload;
+
+        // Check if email exists in unverifiedMail
+      if (unverifiedMail.includes(email)) {
 
         //if token is verified proceed to storing details to database
         if (payload) {
-        let { fname, lname, bname, email, password, role } = payload;
         //Save Details to Database
         const results = await saveToDatabase(fname, lname, bname, email, password, role);
         if(results.rows.length) {
@@ -87,9 +90,12 @@ exports.verifytoken = async (req, res) => {
     } else {
         res.status(404).send("Verification link expired");
     }
+}
     } catch(error) {
         res.status(500).send("Internal Server Problem");
     }
+unverifiedMail.splice(unverifiedMail.indexOf(req.body.email), 1);
+
 };
 
 //Call Back function for Express Passport-local Strategy 
@@ -178,4 +184,13 @@ exports.reset = async(req, res) => {
 
 exports.access = (req, res) => {
     res.status(201).send("You will be redirected soon");
+};
+
+exports.vCheck = (req, res, next) => {
+    if (unverifiedMail.includes(req.body.email)) {
+        console.log(unverifiedMail)
+        res.status(404).send("You need to verify your email first");
+    } else {
+        next()
+    }
 };

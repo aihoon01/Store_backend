@@ -1,5 +1,5 @@
 const express = require("express");
-const { signUp, logout, resetPassword, reset, access, verifytoken } = require("../controllers/authController");
+const { signUp, logout, resetPassword, reset, access, verifytoken, vCheck } = require("../controllers/authController");
 const { validateSignUp, inputValidation, validateReset, checkAuthenticated } = require("../middlewares/verify_m");
 const passport = require("passport");
 
@@ -11,7 +11,7 @@ authRouter.post('/register', validateSignUp, inputValidation, signUp);
 authRouter.get('/verify-email', verifytoken);
 
 // loginRoute
-authRouter.post('/login', passport.authenticate("local"), access);
+authRouter.post('/login', vCheck, passport.authenticate("local"), access);
 
 //logout
 authRouter.get('/logout', logout);
