@@ -17,7 +17,6 @@ exports.signUp = async (req, res) => {
             res.status(404).send("Email already exists!");
         } else {
             res.status(201).send("Verification email has been sent to your email account. Login with your Email verification link");
-            gencode = Math.
             const payload = {
                 fname : firstname,
                 lname : lastname,
