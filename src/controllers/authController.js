@@ -51,6 +51,9 @@ exports.signUp = async (req, res) => {
             transporter.sendMail(mailOptions, function(error, info) {
                 if (error) {
                     throw error;
+                } else {
+                unverifiedMail.push(email);
+
                 }
                 
             });
@@ -60,7 +63,6 @@ exports.signUp = async (req, res) => {
     } catch (err) {
         res.status(500).send("Internal server problem");
     }
-    unverifiedMail.push(email);
 
 };
 
