@@ -39,7 +39,7 @@ exports.signUp = async (req, res) => {
                     <span style="color:white"> We're excited to see you join the community!. As a business owner of Storefront, you can choose from a wide range of multiple design templates and additionally customise your templates to fit your business needs and there are many more features for you</span>
                     <br>
                     <br>
-                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="${req.protocol}://${req.headers.host}/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
+                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="https://main--amalistore.netlify.app/authentication/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
                     <br>
                     <br>
                     <p style="color:white">You are receiving this email because you registered with us on www.${req.headers.host}</p>
@@ -146,7 +146,7 @@ exports.resetPassword = async(req, res) => {
             <h3 >Hi ${user.rows[0].firstname}</h3>
             <p>As you have requested for reset password instructions, here they are, please follow the URL:</p>
             <br>
-            <a href="${req.protocol}://${req.headers.host}/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
+            <a href="https://main--amalistore.netlify.app/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
             `
         }
 
@@ -183,6 +183,16 @@ exports.reset = async(req, res) => {
 
 exports.access = (req, res) => {
     res.status(201).send("You will be redirected soon");
+};
+
+exports.login = async (req, res) => {
+    const results = await getUserByEmail(req.body.email);
+    const details = {
+        id: results.rows[0].id,
+        firstname: results.rows[0].firstname,
+        business: results.rows[0].bname
+    }
+    res.json(details);
 };
 
 exports.vCheck = (req, res, next) => {
