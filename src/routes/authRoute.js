@@ -4,10 +4,6 @@ const { validateSignUp, inputValidation, validateReset, checkAuthenticated } = r
 const passport = require("passport");
 const authRouter = express.Router();
 
-/**
- * 
- */
-
 // signupRoute 
 authRouter.post('/register', validateSignUp, inputValidation, signUp);
 authRouter.post('/verify-email', verifytoken);
