@@ -7,6 +7,7 @@ const passport = require("passport");
 const initializePassport = require("./src/config/passportConfig");
 const session = require("express-session");
 const cors = require("cors");
+const proRouter = require('./src/routes/profileRoute');
 require("dotenv").config();
 
 
@@ -29,6 +30,7 @@ app.use(cors());
 
 //API ROUTES
 app.use(authRouter);
+app.use(proRouter);
   
 //Port config
 const PORT = process.env.PORT || 3001;
