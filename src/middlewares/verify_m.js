@@ -97,9 +97,9 @@ exports.checkAuthenticated = (req, res, next) => {
 };
 
 exports.checkNotAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated) {
+    if (req.isAuthenticated()) {
         next()
     } else {
-        //redirect to login because user is not authenticated to be in that endpoint.
+        res.status(402).send('unauthorized');
     }
 };
