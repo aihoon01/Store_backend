@@ -6,4 +6,4 @@ exports.hashedPassword = (password) => {
 
 exports.verifyHash = (arg1, arg2) => {
     return bcrypt.compare(arg1, arg2.password);
-}
+};

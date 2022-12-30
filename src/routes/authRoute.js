@@ -6,7 +6,7 @@ const authRouter = express.Router();
 
 // signupRoute 
 authRouter.post('/register', validateSignUp, inputValidation, signUp);
-authRouter.post('/verify-email', verifytoken);
+authRouter.get('/verify-email', verifytoken);
 
 // loginRoute
 authRouter.post('/login', vCheck, passport.authenticate("local"), login);

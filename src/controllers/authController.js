@@ -9,9 +9,8 @@ require("dotenv").config();
 const unverifiedMail = [];
 //Signup Function
 exports.signUp = async (req, res) => {
-
     let { firstname, lastname, bname, email, password, password2} = req.body, { role } = req.query;
-    email = email.toLowerCase(); 
+    email = email.toLowerCase();
     try {
         const emailCheck = await getUserByEmail(email);
         if (emailCheck.rows.length > 0) {
@@ -40,7 +39,7 @@ exports.signUp = async (req, res) => {
                     <span style="color:white"> We're excited to see you join the community!. As a business owner of Storefront, you can choose from a wide range of multiple design templates and additionally customise your templates to fit your business needs and there are many more features for you</span>
                     <br>
                     <br>
-                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="${process.env.BaseURLT}/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
+                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="${process.env.baseURL}/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
                     <br>
                     <br>
                     <p style="color:white">You are receiving this email because you registered with us on www.${req.headers.host}</p>
@@ -147,7 +146,7 @@ exports.resetPassword = async(req, res) => {
             <h3 >Hi ${user.rows[0].firstname}</h3>
             <p>As you have requested for reset password instructions, here they are, please follow the URL:</p>
             <br>
-            <a href="${process.env.BaseURLT}/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
+            <a href="${process.env.baseURL}/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
             `
         }
 
@@ -191,7 +190,11 @@ exports.login = async (req, res) => {
     const details = {
         id: results.rows[0].id,
         firstname: results.rows[0].firstname,
-        business: results.rows[0].bname
+        lastname: results.rows[0].lastname,
+        business: results.rows[0].bname,
+        email: results.rows[0].email,
+        location: results.rows[0].location,
+        contact: results.rows[0].contact
     }
     res.json(details);
 };

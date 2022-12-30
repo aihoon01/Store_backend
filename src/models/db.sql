@@ -1,6 +1,6 @@
 CREATE type role as enum (
-    "individual",
-    "business"
+    'individual',
+    'business'
 );
 
 CREATE TABLE users(
@@ -15,23 +15,27 @@ CREATE TABLE users(
     role role NOT NULL
 );
 
-
-CREATE type category as enum (
-    'ecommerce',
-    'finance',
-    'blog'
+CREATE TABlE store (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE,
+    userid INT REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE TABlE store {
-    id SERIAL NOT NULL,
-    name VARCHAR(100),
-    userid INT REFERENCES users(id),
-};
 
 CREATE TABLE storeinfo(
-    id SERIAL PRIMARY KEY NOT NULL,
-    storeid INT REFERENCES store(id) UNIQUE,
-    category category NOT NULL,
-    features JSON 
+    storeid INT PRIMARY KEY REFERENCES store(id) ON DELETE CASCADE,
+    features JSONB
 );
 
+-- CREATE TABLE templates(
+--     id SERIAL PRIMARY KEY,
+--     name VARCHAR(100),
+--     image VARCHAR(100),
+--     category category NOT NULL
+-- );
+
+-- INSERT INTO templates(name, image, category)
+-- VALUES ('blog_1', '/images/blog_1.png', 'blog'), 
+-- ('blog_2', '/images/blog_2.png', 'blog'),
+-- ('ecom_1', '/images/ecom_1.png', 'ecommerce'),
+-- ('ecom_2', '/images/ecom_2.png', 'ecommerce'),
+-- ('finance', '/images/f_1.png', 'finance')
