@@ -75,11 +75,6 @@ exports.logout = (req, res) => {
 
 //Controller for verifying user token before saving to Database
 exports.verifytoken = async (req, res) => {
-    console.log(req.query, "All Q");
-    console.log(req.query.token), 'Token';
-    console.log(req.url);
-    var fullLink = req.protocol + "://" + req.hostname + req.originalUrl;
-    console.log(fullLink);
     try{
         const { token } = req.query;
         const payload= jwt.decode(token, jwtSecret);
