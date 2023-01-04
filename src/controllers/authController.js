@@ -39,7 +39,7 @@ exports.signUp = async (req, res) => {
                     <span style="color:white"> We're excited to see you join the community!. As a business owner of Storefront, you can choose from a wide range of multiple design templates and additionally customise your templates to fit your business needs and there are many more features for you</span>
                     <br>
                     <br>
-                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="${process.env.baseURL}/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
+                    <a style="color: #fff; border-radius:20px; border:10px; background-color:#01b4e4; padding: 0px 10px; font-weight:700px"  href="${process.env.baseURL}/authentication/verify-email?token=${token}">ACTIVATE MY ACCOUNT</a>
                     <br>
                     <br>
                     <p style="color:white">You are receiving this email because you registered with us on www.${req.headers.host}</p>
@@ -78,22 +78,24 @@ exports.verifytoken = async (req, res) => {
     try{
         const { token } = req.query;
         const payload= jwt.decode(token, jwtSecret);
+
         let { fname, lname, bname, email, password, role } = payload;
 
         //if token is verified proceed to storing details to database
-        if (payload) {
+        const emailCheck = await getUserByEmail(email);
+        if (emailCheck.rows.length > 0) {
+            res.status(404).send("Account Has already been verified!");
+        } else {
         //Save Details to Database
         const results = await saveToDatabase(fname, lname, bname, email, password, role);
         if(results.rows.length) {
         res.status(201).send("Thank you for verifying your email");
         } 
-    } else {
-        res.status(404).send("Verification link expired");
-    }
-
+    } 
     } catch(error) {
-        res.status(500).send("Internal Server Problem");
+        res.status(404).send("Verification Link is invalid");
     }
+ 
 unverifiedMail.splice(unverifiedMail.indexOf(req.body.email), 1);
 
 };
@@ -146,7 +148,7 @@ exports.resetPassword = async(req, res) => {
             <h3 >Hi ${user.rows[0].firstname}</h3>
             <p>As you have requested for reset password instructions, here they are, please follow the URL:</p>
             <br>
-            <a href="${process.env.baseURL}/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
+            <a href="${process.env.baseURL}/authentication/reset-password?token=${token}&id=${user.rows[0].id}">RESET YOUR PASSWORD HERE</a>
             `
         }
 
@@ -170,7 +172,7 @@ exports.reset = async(req, res) => {
     
     const jwtSecret = config.jwtSecret +results.rows[0].password;
     const verified = await jwt.decode(token, jwtSecret);
-        const update = await resetUserPassword(password, results.rows[0].email);
+    const update = await resetUserPassword(password, results.rows[0].email);
 
         if (update.rows.length > 0) {
             res.status(200).send("Password successfully reseted");
