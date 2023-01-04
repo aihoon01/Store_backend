@@ -77,4 +77,10 @@ exports.editTemplate = (sid, props, tid ) => {
 exports.getTemplateByCat= (cat) => {
    return pool.query(`
    SELECT * FROM templates WHERE category=$1`, [cat])
-}
+};
+
+// exports.importData = (uid, data) => {
+//    return pool.query(
+//          `INSERT INTO media (userid, contents) VALUES (uid, data) returning *`,[uid, data]  
+//    )
+// };
