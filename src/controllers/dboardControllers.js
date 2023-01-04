@@ -1,5 +1,5 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate } = require("../services/dboardServices");
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo } = require("../services/dboardServices");
 
 
 exports.displayView = async(req, res) => {
@@ -155,4 +155,23 @@ exports.createProject = async (req, res) => {
     let {name, category} = req.body, tid = req.params.tid, uid = req.query.uid;
     const project = await createTemplate(name, uid, category, tid);
     res.status(201).send(project.rows[0]);
+};
+
+exports.storeFiles = (req, res) => {
+    const { tag } = req.files;
+    const tagName = tag.name;
+    const uploadPath = "./src/uploads/" + tagName;
+
+    tag.mv(uploadPath, async function(err) {
+        if (err) return res.status(500).send(err);
+
+        res.send("file Uploaded");
+    });
+
+};
+
+exports.getFile =(req, res) => {
+    let { name } = req.params;
+    const exportPath = __dirname + `/uploads/${name}`; 
+    res.sendFile(exportPath);
 };

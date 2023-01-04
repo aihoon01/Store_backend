@@ -8,6 +8,7 @@ const initializePassport = require("./src/config/passportConfig");
 const session = require("express-session");
 const cors = require("cors");
 const proRouter = require('./src/routes/profileRoute');
+const fileUpload = require('express-fileupload');
 require("dotenv").config();
 
 
@@ -25,8 +26,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+app.use(fileUpload())
 
 //API ROUTES
 app.use(authRouter);
@@ -42,3 +44,5 @@ app.listen(PORT, (error) =>{
         console.log("Error occurred, server can't start", error);
     }
 );
+
+module.exports = app;
