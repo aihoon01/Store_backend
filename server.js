@@ -19,7 +19,8 @@ initializePassport(passport);
 app.use(session({
     secret: process.env.secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {secure: false}
 }));
 
 // app.use(auth.initialize());
@@ -27,7 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({credentials: true}));
 app.use(fileUpload())
 
 //API ROUTES

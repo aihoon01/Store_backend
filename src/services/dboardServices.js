@@ -1,7 +1,7 @@
 const { pool } = require('../config/dbConfig');
 
-exports.updateUserInfo = (firstname, lastname, bname, email, contact, location )=> {
-   return pool.query(`UPDATE users SET firstname = $1, lastname = $2, bname=$3, contact=$4, location=$5 WHERE email=$6 returning *`, [firstname, lastname, bname, contact, location, email]);
+exports.updateUserInfo = (firstname, bname, email, contact, location, id )=> {
+   return pool.query(`UPDATE users SET firstname = $1, bname=$2, email=$3, contact=$4, location=$5 WHERE id=$6 returning *`, [firstname, bname, email,contact, location, id]);
 
 };
 

@@ -37,14 +37,15 @@ exports.displayView = async(req, res) => {
 
 exports.updateProfile = async(req, res) => {
     try {
-    let {name, bname, email, contact, location } = req.body;
-    name=name.split(" ");
-    let firstname = name[0], lastname = name[1];
-   const updatedUser=  await updateUserInfo(firstname, lastname, bname, email, contact, location);
+    let uid = req.query.id
+    let {firstname, business, email, contact, location } = req.body;
+    // name=name.split(" ");
+    // let firstname = name[0], lastname = name[1];
+   const updatedUser=  await updateUserInfo(firstname, business, email, contact, location, uid);
    const details = updatedUser.rows[0];
    let user = {
     id: details.id,
-    name: details.firstname + " " + details.lastname,
+    firstname: details.firstname,
     business: details.bname,
     email: details.email,
     location: details.location,
@@ -57,6 +58,7 @@ exports.updateProfile = async(req, res) => {
 };
 
 exports.sendMessage = (req, res) => {
+    console.log(req)
     let {message, email} = req.body;
     try {
     const mailOptions = {
@@ -91,7 +93,7 @@ exports.loadTemplates = async(req ,res) => {
         let name = store.name, features = store.features;
         allStores[name] = features;
     
-    })
+    });
     // res.send(allStores[0]);
     res.send(allStores)
 } catch(error) {
