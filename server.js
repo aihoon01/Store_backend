@@ -19,7 +19,8 @@ initializePassport(passport);
 app.use(session({
     secret: process.env.secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {secure: false}
 }));
 
 // app.use(auth.initialize());
@@ -31,6 +32,7 @@ app.use(cors({
     origin: "https://amalistore.netlify.app",
     credentials: true
 }));
+
 app.use(fileUpload())
 
 //API ROUTES

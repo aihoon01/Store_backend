@@ -188,17 +188,7 @@ exports.access = (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const results = await getUserByEmail(req.body.email);
-    const details = {
-        id: results.rows[0].id,
-        firstname: results.rows[0].firstname,
-        lastname: results.rows[0].lastname,
-        business: results.rows[0].bname,
-        email: results.rows[0].email,
-        location: results.rows[0].location,
-        contact: results.rows[0].contact
-    }
-    res.json(details);
+    res.send(req.user);
 };
 
 exports.vCheck = (req, res, next) => {
