@@ -27,7 +27,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+    origin: "https://amalistore.netlify.app",
+    credentials: true
+}));
 app.use(fileUpload())
 
 //API ROUTES
