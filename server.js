@@ -31,7 +31,7 @@ app.use(cors({
     origin: "https://amalistore.netlify.app",
     credentials: true
 }));
-app.use(fileUpload())
+app.use(fileUpload());
 
 //API ROUTES
 app.use(authRouter);
