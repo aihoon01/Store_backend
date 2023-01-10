@@ -111,7 +111,14 @@
 //             //Setup
 //             const data = {
 //                 "password" : "admin@StoreFront22.",
-//                 "email" : "stefanhoon@gmail.com"
+//                 "email" : "steppak199@gmail.com"
+//             };
+
+//             const resBody = {
+//                 "firstname": "Admin",
+//                 "email": "steppak199@gmail.com",
+//                 "location": "Ghana-Accra",
+//                 "contact": "+233501590079"
 //             };
             
 //             const statusCode = 200;
@@ -123,7 +130,11 @@
 
 //             //Verify
 //             expect(response.status).to.eq(statusCode);
-//             expect(response.body.data);
+//             expect(response.body.id).not.to.be.null;
+//             expect(response.body.firstname).to.eq(resBody.firstname);
+//             expect(response.body.email).to.eq(resBody.email);
+//             expect(response.body.location).to.eq(resBody.location);
+//             expect(response.body.contact).to.eq(resBody.contact);
 //         });
 
 //         it('Checks if user is NOT authenticated to log in', async()=> {
@@ -179,14 +190,14 @@
 //     });
 
 //     describe('/Reset-Password', ()=> {
-//         it('Checks if password reset link is not valid and sends a 404 status code', async(done)=> {
+//         it('Checks if password reset link is not valid and sends a 404 status code', async()=> {
 //             //Setup
             
 //             const statusCode = 404;
 //             const data = {
 //                 "password" : "89usda.eaworSS@",
 //                 "password2": "89usda.eaworSS@"
-//             }
+//             };
 
 //             //Exercise
 //             const response =  await request(app)
