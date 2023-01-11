@@ -20,6 +20,7 @@ initializePassport(passport);
 //Middlewares
 app.use(session({
     secret: process.env.secret,
+    cookie: {secure: true, sameSite: "none"},
     resave: false,
     saveUninitialized: false,
     store,
