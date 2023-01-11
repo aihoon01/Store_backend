@@ -16,9 +16,9 @@ proRouter.post('/dashboard/support', sendMessage); //checkNotAuthenticated
 // proRouter.get('/dashboard/projects/', checkNotAuthenticated, recentProjects);
 
 //BULK DATA TRANSMISSION AS REQUESTED BY FRONT-END DEV
-proRouter.post('/dashboard/projects', checkNotAuthenticated, buildTemplate, loadTemplates);
-proRouter.get('/dashboard/projects', checkNotAuthenticated, loadTemplates);
-proRouter.delete('/dashboard/projects', checkNotAuthenticated, deleteStore, loadTemplates);
+proRouter.post('/dashboard/projects', buildTemplate, loadTemplates);  // checkNotAuthenticated
+proRouter.get('/dashboard/projects', loadTemplates); // checkNotAuthenticated
+proRouter.delete('/dashboard/projects', deleteStore, loadTemplates); // checkNotAuthenticated
 
 //Options by Category for users to choose from
 proRouter.get('/dashboard/projects/:cat', checkNotAuthenticated, getProjectByCat);

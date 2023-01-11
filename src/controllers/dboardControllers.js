@@ -58,7 +58,6 @@ exports.updateProfile = async(req, res) => {
 };
 
 exports.sendMessage = (req, res) => {
-    console.log(req)
     let {message, email} = req.body;
     try {
     const mailOptions = {
