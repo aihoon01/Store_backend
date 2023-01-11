@@ -9,6 +9,8 @@ const session = require("express-session");
 const cors = require("cors");
 const proRouter = require('./src/routes/profileRoute');
 const fileUpload = require('express-fileupload');
+const { Session } = require('express-session');
+const store = new session.MemoryStore();
 require("dotenv").config();
 
 
@@ -20,7 +22,8 @@ app.use(session({
     secret: process.env.secret,
     resave: false,
     saveUninitialized: false,
-    cookie: {maxAge: 92800000, secure: true, sameSite: "none"}
+    cookie: {secure: false, sameSite: "none"},
+    store,
 }));
 
 // app.use(auth.initialize());
