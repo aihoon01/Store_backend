@@ -19,7 +19,8 @@ initializePassport(passport);
 app.use(session({
     secret: process.env.secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {maxAge: 92800000, secure: true, sameSite: "none"}
 }));
 
 // app.use(auth.initialize());
