@@ -22,7 +22,6 @@ app.use(session({
     secret: process.env.secret,
     resave: false,
     saveUninitialized: false,
-    cookie: {secure: true, sameSite: "none"},
     store,
 }));
 
