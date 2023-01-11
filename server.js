@@ -9,7 +9,6 @@ const session = require("express-session");
 const cors = require("cors");
 const proRouter = require('./src/routes/profileRoute');
 const fileUpload = require('express-fileupload');
-const { Session } = require('express-session');
 const store = new session.MemoryStore();
 require("dotenv").config();
 

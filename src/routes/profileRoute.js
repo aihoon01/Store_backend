@@ -5,12 +5,12 @@ const { checkNotAuthenticated } = require("../middlewares/verify_m");
 const proRouter = express.Router();
 
 
-proRouter.get('/dashboard', checkNotAuthenticated, displayView);
+proRouter.get('/dashboard', displayView); //checkNotAuthenticated
 
 // proRouter.get('/dashboard/:profile', checkNotAuthenticated, profile);
-proRouter.post('/dashboard/profile', checkNotAuthenticated, updateProfile);
+proRouter.post('/dashboard/profile', updateProfile); //checkNotAuthenticated
 
-proRouter.post('/dashboard/support', checkNotAuthenticated, sendMessage);
+proRouter.post('/dashboard/support', sendMessage); //checkNotAuthenticated
 
 //Users Recent Projects
 // proRouter.get('/dashboard/projects/', checkNotAuthenticated, recentProjects);
