@@ -20,7 +20,7 @@ initializePassport(passport);
 //Middlewares
 app.use(session({
     secret: process.env.secret,
-    cookie: {secure: true, sameSite: "none"},
+    cookie: {secure: true, sameSite: 'none'},
     resave: false,
     saveUninitialized: false,
     store,
@@ -33,7 +33,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({
     origin: ["https://amalistore.netlify.app", "http://127.0.0.1:5173"],
-    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
 app.use(fileUpload());
