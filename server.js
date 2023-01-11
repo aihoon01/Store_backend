@@ -20,13 +20,14 @@ initializePassport(passport);
 //Middlewares
 app.use(session({
     secret: process.env.secret,
-    cookie: {secure: false, sameSite: 'lax'},
+    cookie: {secure: true, sameSite: 'none'},
     resave: false,
     saveUninitialized: false,
     store,
 }));
 
 // app.use(auth.initialize());
+app.set("trust proxy", 1);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
