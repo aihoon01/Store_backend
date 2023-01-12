@@ -95,6 +95,7 @@ exports.loadTemplates = async(req ,res) => {
     
     });
     // res.send(allStores[0]);
+    console.log(allStores);
     res.json(allStores)
 } catch(error) {
     res.send(error);
@@ -105,6 +106,7 @@ exports.buildTemplate = async(req, res, next) => {
     try {
     const {uid} = req.query;
     for(const [key, value] of Object.entries(req.body)) {
+        console.log('key: ', key, 'value: ' , value)
         const storeExist = await getStore(key);
         if(!storeExist.rows.length) {
          await createStore(key, uid)
