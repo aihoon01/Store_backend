@@ -79,8 +79,16 @@ exports.getTemplateByCat= (cat) => {
    SELECT * FROM templates WHERE category=$1`, [cat])
 };
 
-// exports.importData = (uid, data) => {
-//    return pool.query(
-//          `INSERT INTO media (userid, contents) VALUES (uid, data) returning *`,[uid, data]  
-//    )
-// };
+
+exports.importMedia = (uid, data) => {
+   return pool.query(
+         `UPDATE users SET profile = $1 WHERE id = $2 returning profile`, [data, uid]  
+   )
+};
+
+exports.exportMedia = (uid) => {
+   return pool.query(
+      `SELECT profile FROM users WHERE id = $1`, [uid]
+   )
+};
+

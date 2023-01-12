@@ -26,6 +26,8 @@ CREATE TABLE storeinfo(
     features JSONB
 );
 
+ALTER TABLE users ADD COLUMN profile VARCHAR(100)
+
 -- CREATE TABLE templates(
 --     id SERIAL PRIMARY KEY,
 --     name VARCHAR(100),

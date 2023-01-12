@@ -1,6 +1,7 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo } = require("../services/dboardServices");
-
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia } = require("../services/dboardServices");
+const fs = require('fs');
+require("dotenv").config();
 
 exports.displayView = async(req, res) => {
     const overview = {
@@ -94,7 +95,7 @@ exports.loadTemplates = async(req ,res) => {
     
     });
     // res.send(allStores[0]);
-    res.send(allStores)
+    res.json(allStores)
 } catch(error) {
     res.send(error);
 }
@@ -158,21 +159,59 @@ exports.createProject = async (req, res) => {
     res.status(201).send(project.rows[0]);
 };
 
-exports.storeFiles = (req, res) => {
+exports.storeFiles = async (req, res) => {
+    const uid = req.query.uid;
     const { tag } = req.files;
     const tagName = tag.name;
-    const uploadPath = "./src/uploads/" + tagName;
+    const uploadPath = __dirname + "/uploads/" + tagName;
 
-    tag.mv(uploadPath, async function(err) {
+    tag.mv(uploadPath, function(err) {
         if (err) return res.status(500).send(err);
-
-        res.send("file Uploaded");
+        const exportPath = process.env.baseURLT + `/uploads/${tagName}`; 
+        res.send(exportPath);
     });
+
+     await importMedia(uid, tagName);
 
 };
 
-exports.getFile =(req, res) => {
-    let { name } = req.params;
-    const exportPath = __dirname + `/uploads/${name}`; 
+exports.updateProfileImg = async (req, res) => {
+    const uid = req.query.uid;
+    const { tag } = req.files;
+    const tagName = tag.name;
+    const rootPath = __dirname + "/uploads/";
+    const uploadPath = rootPath + tagName;
+
+
+    const profileExists = await exportMedia(uid);
+    if (profileExists.rows.length) {
+      const deletePath = rootPath + profileExists.rows[0].profile;
+       fs.unlink(deletePath, (err)=> {
+        if(err) {
+        return 
+        }
+       });
+    };
+
+    tag.mv(uploadPath, function(err) {
+        if (err) return res.status(500).send(err);
+        const exportPath = process.env.baseURLT + `/uploads/${tagName}`;
+        res.send(exportPath);
+    });
+
+     await importMedia(uid, tagName);
+
+};
+
+// exports.getFile = async (req, res) => {
+//     let { uid } = req.query;
+//     const profile = await exportMedia(uid)
+//     const exportPath = __dirname + `/uploads/${profile.rows[0].profile}`; 
+//     res.sendFile(exportPath);
+// };
+
+exports.getFile = async (req, res) => {
+    let { img } = req.params;
+    const exportPath = __dirname + `/uploads/${img}`; 
     res.sendFile(exportPath);
 };
