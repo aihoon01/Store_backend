@@ -106,7 +106,6 @@ exports.buildTemplate = async(req, res, next) => {
     try {
     const {uid} = req.query;
     for(const [key, value] of Object.entries(req.body)) {
-        console.log('key: ', key, 'value: ' , value)
         const storeExist = await getStore(key);
         if(!storeExist.rows.length) {
          await createStore(key, uid)
@@ -181,7 +180,7 @@ exports.updateProfileImg = async (req, res) => {
     const uid = req.query.uid;
     const { tag } = req.files;
     const tagName = tag.name;
-    const rootPath = "src/controllers/uploads/";
+    const rootPath = "./src/controllers/uploads/";
     const uploadPath = rootPath + tagName;
 
 
@@ -196,8 +195,10 @@ exports.updateProfileImg = async (req, res) => {
     };
 
     tag.mv(uploadPath, function(err) {
+        console.log(uploadPath);
         if (err) return res.status(500).send(err);
         const exportPath = process.env.baseURLT + `/uploads/${tagName}`;
+        console.log(exportPath);
         res.send(exportPath);
     });
 
