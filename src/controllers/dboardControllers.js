@@ -179,7 +179,7 @@ exports.updateProfileImg = async (req, res) => {
     const uid = req.query.uid;
     const { tag } = req.files;
     const tagName = tag.name;
-    const rootPath = __dirname + '/uploads/';
+    const rootPath = 'src/controllers/uploads/';
     const uploadPath = rootPath + tagName;
 
 
