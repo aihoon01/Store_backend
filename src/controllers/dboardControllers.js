@@ -2,7 +2,6 @@ const { transporter } = require("../config/mailConfig");
 const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia } = require("../services/dboardServices");
 const fs = require('fs');
 require("dotenv").config();
-
 exports.displayView = async(req, res) => {
     const overview = {
         summary : {
@@ -180,7 +179,7 @@ exports.updateProfileImg = async (req, res) => {
     const uid = req.query.uid;
     const { tag } = req.files;
     const tagName = tag.name;
-    const rootPath = "./src/controllers/uploads/";
+    const rootPath = __dirname + '/uploads/';
     const uploadPath = rootPath + tagName;
 
 
