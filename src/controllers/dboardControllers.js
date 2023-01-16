@@ -198,12 +198,18 @@ exports.updateProfileImg = async (req, res) => {
         console.log(uploadPath);
         if (err) return res.status(500).send(err);
         const exportPath = process.env.baseURLT + `/uploads/${tagName}`;
-        console.log(exportPath);
         res.send(exportPath);
     });
 
      await importMedia(uid, tagName);
 
+};
+
+exports.getProfilePic = async (req, res) => {
+    const uid = req.query.uid;
+    const profileExists = await exportMedia(uid);
+    const exportPath = process.env.baseURLT + `/uploads/${profileExists.rows[0].profile}`;
+    res.send(exportPath);
 };
 
 // exports.getFile = async (req, res) => {
