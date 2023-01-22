@@ -1,22 +1,23 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia } = require("../services/dboardServices");
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView } = require("../services/dboardServices");
 const fs = require('fs');
-const path  = require('path')
 require("dotenv").config();
-exports.displayView = async(req, res) => {
-    const overview = {
-        summary : {
-        sitesCreated: '-',
-        views: '-',
-        orders: '-',
-        earnings: '-'
-            },
+
+
+exports.storeAnalytics = async(req, res) => {
+    let uid = req.query.uid;
+    const insights = await detailedInsights(uid)
+    const vendors = await getVendors(uid)
+    
+    let overview= {
+        summary : insights.rows[0],
         
-        vendors: {
-        }
+        vendors: vendors.rows[0]
 
 };
+
     res.json(overview);
+
 };
 
 // exports.profile = async(req, res) => {
@@ -119,6 +120,17 @@ exports.buildTemplate = async(req, res, next) => {
     }
 };
 
+exports.templateInsights = async (req, res) => {
+    let uid = req.query.uid, name = req.params.name;
+    
+    await addView(name)
+    
+    res.status(201).send();
+
+};
+
+
+
 exports.deleteStore = async(req, res, next) => {
     try {
     let { name, uid} = req.query;
@@ -162,17 +174,44 @@ exports.createProject = async (req, res) => {
 
 exports.storeFiles = async (req, res) => {
     const uid = req.query.uid;
-    const { tag } = req.files;
-    const tagName = tag.name;
-    const uploadPath = __dirname + "/uploads/" + tagName;
+    const storename = req.params.storename;
+    let response = {};
+    for(const [key, value] of Object.entries(req.files)) {
+        let keyName = value.name;
+        const rootPath = './src/controllers/uploads/';
+        const uploadPath = rootPath + keyName; 
+        const fileExists = await fileMedia(uid, storename);
 
-    tag.mv(uploadPath, function(err) {
-        if (err) return res.status(500).send(err);
-        const exportPath = process.env.baseURLT + `/uploads/${tagName}`; 
-        res.send(exportPath);
-    });
+        if(!fileExists.rows.length) {
+            await uploadMedia(uid, storename, keyName);
 
-     await importMedia(uid, tagName);
+        } else {
+
+            if(fileExists.rows[0].filename === keyName) {
+                const deletePath = rootPath + fileExists.rows[0];
+               fs.unlink(deletePath, (err) => {
+                if(err) return
+               });
+               await updateMedia(uid, storename, keyName, fileExists.rows[0].filename);
+            }
+             else {
+                await uploadMedia(uid, storename, keyName);
+            };
+
+        };
+        
+    
+        value.mv(uploadPath, function(err) {
+            if (err) return res.status(500).send(err);
+            
+        });
+
+        const exportPath = process.env.baseURLT + `/uploads/${keyName}`; 
+        response[key] = exportPath;
+
+    }
+
+    res.send(response);
 
 };
 // const rootPath = require('../../src/controllers/uploads/')
@@ -208,8 +247,12 @@ exports.updateProfileImg = async (req, res) => {
 exports.getProfilePic = async (req, res) => {
     const uid = req.query.uid;
     const profileExists = await exportMedia(uid);
-    const exportPath = process.env.baseURLT + `/uploads/${profileExists.rows[0].profile}`;
+    if(profileExists.rows.length) {
+    const exportPath = process.env.baseURLT + `/uploads/${profileExists.rows[0].profile}`
     res.send(exportPath);
+    } else {
+        res.status(403).send("User has no profile Picture");
+    }
 };
 
 // exports.getFile = async (req, res) => {

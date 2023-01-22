@@ -12,7 +12,8 @@ CREATE TABLE users(
     password VARCHAR(100) NOT NULL,
     contact VARCHAR(100),
     location VARCHAR(200),
-    role role NOT NULL
+    role role NOT NULL,
+    profile VARCHAR(100)
 );
 
 CREATE TABlE store (
@@ -21,19 +22,41 @@ CREATE TABlE store (
     userid INT REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE views (
+    storename VARCHAR(100) REFERENCES store(name) NOT NULL,
+    seen BOOLEAN NOT NULL
+);
+
+CREATE TABLE vendors (
+    id INT PRIMARY KEY,
+    vendor VARCHAR(100),
+    commission INT,
+    storeid INT REFERENCES store(id)
+);
+
+CREATE TABLE items (
+    id BIGINT PRIMARY KEY,
+    size INT,
+    vendorid INT REFERENCES vendors(id) ON DELETE CASCADE
+);
+
+CREATE TABLE orders (
+    id BIGINT PRIMARY KEY,
+    uid INT REFERENCES users(id),
+    vendorid INT REFERENCES vendors(id) ON DELETE CASCADE,
+    price INT NOT NULL
+);
+
 CREATE TABLE storeinfo(
     storeid INT PRIMARY KEY REFERENCES store(id) ON DELETE CASCADE,
     features JSONB
 );
 
-ALTER TABLE users ADD COLUMN profile VARCHAR(100)
 
--- CREATE TABLE templates(
---     id SERIAL PRIMARY KEY,
---     name VARCHAR(100),
---     image VARCHAR(100),
---     category category NOT NULL
--- );
+CREATE TABLE Media(
+    storeid INT REFERENCES store(id) NOT NULL,
+    fileName VARCHAR(200) NOT NULL
+); 
 
 -- INSERT INTO templates(name, image, category)
 -- VALUES ('blog_1', '/images/blog_1.png', 'blog'), 
