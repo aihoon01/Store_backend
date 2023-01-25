@@ -135,16 +135,16 @@ exports.detailedInsights = (uid) => {
 
 exports.fileMedia = (uid, storename) => {
    return pool.query(`WITH store AS (SELECT * FROM store WHERE userid = $1 AND name=$2)
-   SELECT fileName FROM media, store WHERE media.storeid = (SELECT id FROM store)`, [uid, storename])
+   SELECT fileName, label FROM media, store WHERE media.storeid = (SELECT id FROM store)`, [uid, storename])
 };
 
-exports.uploadMedia = (uid, storename, filename) => {
-   return pool.query(`WITH store AS (SELECT * FROM store WHERE userid = $1 AND name=$2) INSERT INTO media (storeid, fileName) VALUES((SELECT id FROM store), $3)`, [uid, storename, filename])
+exports.uploadMedia = (uid, storename, filename, label) => {
+   return pool.query(`WITH store AS (SELECT * FROM store WHERE userid = $1 AND name=$2) INSERT INTO media (storeid, fileName, label) VALUES((SELECT id FROM store), $3, $4)`, [uid, storename, filename, label])
 };
 
-exports.updateMedia = (uid, storename, filename, existingfile) => {
+exports.updateMedia = (uid, storename, filename, label,existingfile) => {
    return pool.query(`WITH store AS (SELECT * FROM store WHERE userid = $1 AND name=$2)
-    UPDATE media  SET fileName = $3 WHERE storeid=(SELECT id FROM store) AND filename =$4`, [uid, storename, filename, existingfile])
+    UPDATE media  SET fileName = $3 AND label = $4 WHERE storeid=(SELECT id FROM store) AND filename =$5`, [uid, storename, filename, label, existingfile])
 };
 
 exports.addVendorDetails = (uid, storename, vendor, commission) => {

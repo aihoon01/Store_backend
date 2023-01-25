@@ -187,7 +187,7 @@ exports.storeFiles = async (req, res) => {
         const fileExists = await fileMedia(uid, storename);
 
         if(!fileExists.rows.length) {
-            await uploadMedia(uid, storename, keyName);
+            await uploadMedia(uid, storename, keyName, key);
 
         } else {
 
@@ -196,10 +196,10 @@ exports.storeFiles = async (req, res) => {
                fs.unlink(deletePath, (err) => {
                 if(err) return
                });
-               await updateMedia(uid, storename, keyName, fileExists.rows[0].filename);
+               await updateMedia(uid, storename, keyName, key, fileExists.rows[0].filename);
             }
              else {
-                await uploadMedia(uid, storename, keyName);
+                await uploadMedia(uid, storename, keyName, key);
             };
 
         };
@@ -216,6 +216,23 @@ exports.storeFiles = async (req, res) => {
     }
 
     res.send(response);
+
+};
+
+exports.feedFiles = async (req, res) => {
+    let uid = req.query.uid, 
+    storename = req.params.storename;
+
+    const files = await fileMedia(uid, storename);
+    let response = {};
+
+    files.rows.forEach(file => {
+        let fname = file.filename,
+        label = file.label
+        const exportPath = process.env.baseURLT + `/uploads/${fname}`; 
+        response[label] = {src: exportPath};
+    });
+    console.log(response)
 
 };
 // const rootPath = require('../../src/controllers/uploads/')

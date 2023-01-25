@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendMessage, updateProfile, getProject, editProject, getProjectByCat, createProject, store, buildTemplate, loadTemplates, deleteStore, storeFiles, getFile, updateProfileImg, getProfilePic, templateInsights, storeAnalytics, addVendor, addItems} = require("../controllers/dboardControllers");
+const { sendMessage, updateProfile, getProject, editProject, getProjectByCat, createProject, store, buildTemplate, loadTemplates, deleteStore, storeFiles, getFile, updateProfileImg, getProfilePic, templateInsights, storeAnalytics, addVendor, addItems, feedFiles} = require("../controllers/dboardControllers");
 const { checkNotAuthenticated } = require("../middlewares/verify_m");
 
 const proRouter = express.Router();
@@ -32,6 +32,7 @@ proRouter.put('/dashboard/project/:tid', checkNotAuthenticated, editProject);
 
 //Uploading Pictures and Files 
 proRouter.post('/uploads/:storename', storeFiles);
+proRouter.get('/uploads/:storename', feedFiles);
 proRouter.post('/dashboard/profile/img', updateProfileImg);
 proRouter.get('/dashboard/profile/img', getProfilePic);
 proRouter.get('/uploads/:img', getFile);

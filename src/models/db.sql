@@ -57,7 +57,8 @@ CREATE TABLE storeinfo(
 
 CREATE TABLE Media(
     storeid INT REFERENCES store(id) ON DELETE CASCADE NOT NULL,
-    fileName VARCHAR(200) NOT NULL
+    fileName VARCHAR(200) NOT NULL,
+    label VARCHAR(200) NOT NULL
 ); 
 
 -- INSERT INTO templates(name, image, category)
