@@ -232,7 +232,7 @@ exports.feedFiles = async (req, res) => {
         const exportPath = process.env.baseURLT + `/uploads/${fname}`; 
         response[label] = {src: exportPath};
     });
-    console.log(response)
+    res.send(response);
 
 };
 // const rootPath = require('../../src/controllers/uploads/')
