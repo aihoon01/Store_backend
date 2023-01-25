@@ -110,9 +110,13 @@ exports.addView = (storename) => {
 };
 
 exports.getVendors = (uid) => {
-   return pool.query(`WITH store AS(SELECT * FROM store WHERE userid = $1)
-   SELECT vendors.id, vendors.vendor, vendors.commission
-   FROM store, vendors WHERE vendors.storeid = store.id`, [uid])
+   return pool.query(`WITH store AS(SELECT * FROM store WHERE userid = $1),
+   vends AS (SELECT vendors.id, vendors.vendor, vendors.commission, vendors.storeid
+   FROM store, vendors WHERE vendors.storeid = store.id),
+  items AS (SELECT items.id, items.size, items.vendorid FROM items JOIN vends ON items.vendorid=vends.id),
+  itemscount AS (SELECT SUM(items.size) AS items FROM items)
+  SELECT vends.vendor AS Vendor, vends.id AS ID, itemscount.items AS Size, vends.commission AS Commission FROM vends, itemscount GROUP BY 1, 2, 3, 4
+   `, [uid])
 };
 
 exports.detailedInsights = (uid) => {
@@ -120,14 +124,13 @@ exports.detailedInsights = (uid) => {
    sitescreated AS (SELECT COUNT(store) AS sites FROM store),
   views AS (SELECT COUNT(views.seen) AS views FROM views JOIN store ON views.storename=store.name),
   vends AS (SELECT vendors.id, vendors.vendor, vendors.commission, vendors.storeid FROM vendors JOIN store ON vendors.storeid = store.id),
-  items AS (SELECT items.id, items.size, items.vendorid FROM items JOIN vends ON items.vendorid=vends.id),
-  itemscount AS (SELECT SUM(items.size) AS items FROM items),
+  
   orders AS (SELECT orders.id, orders.uid, orders.vendorid, orders.price FROM orders JOIN vends ON orders.vendorid = vends.id),
   orderscount AS (SELECT COUNT(orders.id) AS orders FROM orders),
   pricesum AS (SELECT SUM(orders.price) AS price FROM orders )
   
-  SELECT sitescreated.sites AS sites, views.views AS views, itemscount.items AS items, orderscount.orders AS orders,
-  pricesum.price AS earnings FROM sitescreated, views, itemscount, orderscount, pricesum`, [uid])
+  SELECT sitescreated.sites AS sites, views.views AS views, orderscount.orders AS orders,
+  pricesum.price AS earnings FROM sitescreated, views, orderscount, pricesum`, [uid])
 };
 
 exports.fileMedia = (uid, storename) => {
@@ -142,4 +145,20 @@ exports.uploadMedia = (uid, storename, filename) => {
 exports.updateMedia = (uid, storename, filename, existingfile) => {
    return pool.query(`WITH store AS (SELECT * FROM store WHERE userid = $1 AND name=$2)
     UPDATE media  SET fileName = $3 WHERE storeid=(SELECT id FROM store) AND filename =$4`, [uid, storename, filename, existingfile])
-}
+};
+
+exports.addVendorDetails = (uid, storename, vendor, commission) => {
+   let vid = Math.floor(10000000 + Math.random() * 900000000);
+   return pool.query(`WITH store AS (SELECT * FROM store WHERE userid=$1 AND name=$2)
+   INSERT INTO vendors(id, vendor, commission, storeid) VALUES($3, $4, $5, (SELECT store.id FROM store)) RETURNING id`, [uid, storename, vid, vendor, commission])
+};
+
+exports.getVendor = (vendor) => {
+   return pool.query(`SELECT * FROM vendors WHERE vendor =$1`, [vendor])
+};
+
+exports.addItemsDetails = (uid, storename, vendor, itemName, itemSize, itemPrice) => {
+   return pool.query(`WITH store AS (SELECT * FROM store WHERE userid=$1 AND name=$2),
+   vends AS (SELECT vendors.id FROM vendors, store WHERE vendors.storeid = store.id AND vendor=$3)
+   INSERT INTO items (name, size, price, vendorid) VALUES($4, $5, $6, (SELECT id FROM vends)) returning *`, [uid, storename, vendor, itemName, itemSize, itemPrice])
+};

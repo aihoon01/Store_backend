@@ -1,5 +1,5 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView } = require("../services/dboardServices");
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView, addVendorDetails, getVendor, addItemsDetails } = require("../services/dboardServices");
 const fs = require('fs');
 require("dotenv").config();
 
@@ -42,7 +42,10 @@ exports.updateProfile = async(req, res) => {
     let uid = req.query.id
     let {firstname, business, email, contact, location } = req.body;
     // name=name.split(" ");
-    // let firstname = name[0], lastname = name[1];
+    const emailCheck = await getUserByEmail(email);
+    if (emailCheck.rows.length) {
+    res.status(403).send('Email already exists'); 
+    } else {
    const updatedUser=  await updateUserInfo(firstname, business, email, contact, location, uid);
    const details = updatedUser.rows[0];
    let user = {
@@ -53,7 +56,8 @@ exports.updateProfile = async(req, res) => {
     location: details.location,
     contact: details.contact
 }
-   res.json(user);
+ res.json(user);
+}
 } catch (error) {
     res.status(500).send('Internal server error');
 };
@@ -207,7 +211,7 @@ exports.storeFiles = async (req, res) => {
         });
 
         const exportPath = process.env.baseURLT + `/uploads/${keyName}`; 
-        response[key] = exportPath;
+        response[key] = {src: exportPath};
 
     }
 
@@ -266,4 +270,37 @@ exports.getFile = async (req, res) => {
     let { img } = req.params;
     const exportPath = __dirname + `/uploads/${img}`; 
     res.sendFile(exportPath);
+};
+
+exports.addVendor = async (req, res, next) => {
+    let {uid }= req.query,
+    {storename} = req.params,
+    {item, commission, vendor} = req.body;
+
+    const vendorExists = await getVendor(vendor);
+    if(!vendorExists.rows.length) {
+        await addVendorDetails(uid, storename, commission);
+        next()
+    } else {
+        res.status(404).send('Vendor already exists')
+    }
+
+};
+
+exports.addItems = async (req, res) => {
+     let {uid }= req.query,
+    {storename} = req.params,
+    {item, vendor}= req.body;
+
+    let itemName = item.name,
+    itemPrice = item.price,
+    itemSize = item.size;
+    try {
+    await addItemsDetails(uid, storename, vendor, itemName, itemSize, itemPrice);
+    } catch(error) {
+        res.send(404).send("Couldn't add Item")
+    }
+
+    res.status(201).send("Vendor and Items successfully added");
+
 };

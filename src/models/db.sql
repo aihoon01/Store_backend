@@ -23,26 +23,28 @@ CREATE TABlE store (
 );
 
 CREATE TABLE views (
-    storename VARCHAR(100) REFERENCES store(name) NOT NULL,
+    storename VARCHAR(100) REFERENCES store(name) ON DELETE CASCADE NOT NULL,
     seen BOOLEAN NOT NULL
 );
 
 CREATE TABLE vendors (
     id INT PRIMARY KEY,
-    vendor VARCHAR(100),
+    vendor VARCHAR(100) UNIQUE,
     commission INT,
-    storeid INT REFERENCES store(id)
+    storeid INT REFERENCES store(id) ON DELETE CASCADE
 );
 
 CREATE TABLE items (
-    id BIGINT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     size INT,
+    name VARCHAR(100),
+    price INT,
     vendorid INT REFERENCES vendors(id) ON DELETE CASCADE
 );
 
 CREATE TABLE orders (
     id BIGINT PRIMARY KEY,
-    uid INT REFERENCES users(id),
+    uid INT,
     vendorid INT REFERENCES vendors(id) ON DELETE CASCADE,
     price INT NOT NULL
 );
@@ -54,7 +56,7 @@ CREATE TABLE storeinfo(
 
 
 CREATE TABLE Media(
-    storeid INT REFERENCES store(id) NOT NULL,
+    storeid INT REFERENCES store(id) ON DELETE CASCADE NOT NULL,
     fileName VARCHAR(200) NOT NULL
 ); 
 

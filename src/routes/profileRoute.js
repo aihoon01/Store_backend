@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendMessage, updateProfile, getProject, editProject, getProjectByCat, createProject, store, buildTemplate, loadTemplates, deleteStore, storeFiles, getFile, updateProfileImg, getProfilePic, templateInsights, storeAnalytics} = require("../controllers/dboardControllers");
+const { sendMessage, updateProfile, getProject, editProject, getProjectByCat, createProject, store, buildTemplate, loadTemplates, deleteStore, storeFiles, getFile, updateProfileImg, getProfilePic, templateInsights, storeAnalytics, addVendor, addItems} = require("../controllers/dboardControllers");
 const { checkNotAuthenticated } = require("../middlewares/verify_m");
 
 const proRouter = express.Router();
@@ -20,7 +20,7 @@ proRouter.post('/dashboard/projects', buildTemplate, loadTemplates);  // checkNo
 proRouter.get('/dashboard/projects', loadTemplates); // checkNotAuthenticated
 proRouter.delete('/dashboard/projects', deleteStore, loadTemplates); // checkNotAuthenticated
 proRouter.get('/store/:name', templateInsights); //checkNotAuthenticated
-// proRouter.
+proRouter.post('/vendors/:storename', addVendor, addItems); //checkNotAuthenticated
 
 //Options by Category for users to choose from
 proRouter.get('/dashboard/projects/:cat', checkNotAuthenticated, getProjectByCat);
