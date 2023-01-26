@@ -210,7 +210,7 @@ exports.storeFiles = async (req, res) => {
             
         });
 
-        const exportPath = process.env.baseURLT + `/uploads/${keyName}`; 
+        const exportPath = process.env.baseURLT + `/upload/${keyName}`; 
         response[key] = {src: exportPath};
 
     }
@@ -229,7 +229,7 @@ exports.feedFiles = async (req, res) => {
     files.rows.forEach(file => {
         let fname = file.filename,
         label = file.label
-        const exportPath = process.env.baseURLT + `/uploads/${fname}`; 
+        const exportPath = process.env.baseURLT + `/upload/${fname}`; 
         response[label] = {src: exportPath};
     });
     res.send(response);
@@ -257,7 +257,7 @@ exports.updateProfileImg = async (req, res) => {
     tag.mv(uploadPath, function(err) {
         console.log(uploadPath);
         if (err) return res.status(500).send(err);
-        const exportPath = process.env.baseURLT + `/uploads/${tagName}`;
+        const exportPath = process.env.baseURLT + `/upload/${tagName}`;
         res.send(exportPath);
     });
 
@@ -269,7 +269,7 @@ exports.getProfilePic = async (req, res) => {
     const uid = req.query.uid;
     const profileExists = await exportMedia(uid);
     if(profileExists.rows.length) {
-    const exportPath = process.env.baseURLT + `/uploads/${profileExists.rows[0].profile}`
+    const exportPath = process.env.baseURLT + `/upload/${profileExists.rows[0].profile}`
     res.send(exportPath);
     } else {
         res.status(403).send("User has no profile Picture");

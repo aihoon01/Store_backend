@@ -35,6 +35,6 @@ proRouter.post('/uploads/:storename', storeFiles);
 proRouter.get('/uploads/:storename', feedFiles);
 proRouter.post('/dashboard/profile/img', updateProfileImg);
 proRouter.get('/dashboard/profile/img', getProfilePic);
-proRouter.get('/uploads/:img', getFile);
+proRouter.get('/upload/:img', getFile);
 
 module.exports = proRouter;
