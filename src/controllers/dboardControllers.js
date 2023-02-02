@@ -1,5 +1,5 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView, addVendorDetails, getVendor, addItemsDetails } = require("../services/dboardServices");
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView, addVendorDetails, getVendor, addItemsDetails, updateStoreStatus, getAllHostedStores } = require("../services/dboardServices");
 const fs = require('fs');
 require("dotenv").config();
 
@@ -99,8 +99,22 @@ exports.loadTemplates = async(req ,res) => {
         allStores[name] = features;
     
     });
+    res.json(allStores)
+} catch(error) {
+    res.send(error);
+}
+};
+
+exports.loadHostedTemplates = async(req ,res) => {
+    try{
+    const stores = await getAllHostedStores();
+    let allStores = {};
+    stores.rows.forEach(store=> {
+        let name = store.name, features = store.features;
+        allStores[name] = features;
+    
+    });
     // res.send(allStores[0]);
-    console.log(allStores);
     res.json(allStores)
 } catch(error) {
     res.send(error);
@@ -132,8 +146,6 @@ exports.templateInsights = async (req, res) => {
     res.status(201).send();
 
 };
-
-
 
 exports.deleteStore = async(req, res, next) => {
     try {
@@ -181,7 +193,7 @@ exports.storeFiles = async (req, res) => {
     const storename = req.params.storename;
     let response = {};
     for(const [key, value] of Object.entries(req.files)) {
-        let keyName = value.name;
+        let keyName = value.name.join('');
         const rootPath = './src/controllers/uploads/';
         const uploadPath = rootPath + keyName; 
         const fileExists = await fileMedia(uid, storename);
@@ -320,4 +332,14 @@ exports.addItems = async (req, res) => {
 
     res.status(201).send("Vendor and Items successfully added");
 
+};
+
+exports.hostStore =async (req, res) => {
+    const store= req.body.store;
+    try {
+     await updateStoreStatus(store);
+        res.send("Store has been successfully hosted")
+    } catch(error) {
+        res.send("Store does not exists!... Save store first")
+    }
 };

@@ -51,7 +51,8 @@ CREATE TABLE orders (
 
 CREATE TABLE storeinfo(
     storeid INT PRIMARY KEY REFERENCES store(id) ON DELETE CASCADE,
-    features JSONB
+    features JSONB,
+    hosted BOOLEAN
 );
 
 

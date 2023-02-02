@@ -47,6 +47,12 @@ exports.getStore = (name) => {
    return pool.query(`SELECT * FROM store WHERE name =$1`, [name])
 };
 
+exports.getAllHostedStores = () => {
+   return pool.query(`WITH storeinfos AS (SELECT * FROM storeinfo WHERE hosted = true),
+   stores AS (SELECT * FROM store, storeinfos WHERE store.id = storeinfos.storeid)
+   SELECT stores.name, storeinfos.features FROM storeinfos, stores`)
+}
+
 exports.getstoreInfo = (uid) =>{
    return pool.query(
    `WITH temp AS (SELECT * FROM store WHERE store.userid=$1)
@@ -100,6 +106,11 @@ exports.exportMedia = (uid) => {
 //        throw error;
 //    }
 // };
+
+exports.updateStoreStatus = (name)=> {
+   return pool.query(`  WITH store AS (SELECT * FROM store WHERE name = $1)
+   UPDATE storeinfo SET hosted = true WHERE storeid= (SELECT id FROM store)`, [name])
+};
 
 exports.addView = (storename) => {
    try {
