@@ -195,7 +195,8 @@ exports.storeFiles = async (req, res) => {
     try {
     for(const [key, value] of Object.entries(req.files)) {
         //Get filename from each value
-        let keyName = value.name.replaceAll(" ", "");
+        let keyName = value.name.split(" ");
+        keyName = keyName.join("");
         const rootPath = './src/controllers/uploads/';
         const uploadPath = rootPath + keyName;
         //Check if file alread exists 
@@ -220,16 +221,11 @@ exports.storeFiles = async (req, res) => {
             };
 
         };
-        
-    
         value.mv(uploadPath, function(err) {
-            if (err) return res.status(500).send(err);
-            
+            if (err) return res.status(500).send(err);   
         });
-
         const exportPath = process.env.baseURLT + `/upload/${keyName}`; 
         response[key] = {src: exportPath};
-
     }
 
     res.send(response);
