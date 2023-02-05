@@ -192,10 +192,10 @@ exports.storeFiles = async (req, res) => {
     const uid = req.query.uid;
     let storename = req.params.storename;
     let response = {};
+    try {
     for(const [key, value] of Object.entries(req.files)) {
         //Get filename from each value
         let keyName = value.name.replaceAll(" ", "");
-        console.log(keyName);
         const rootPath = './src/controllers/uploads/';
         const uploadPath = rootPath + keyName;
         //Check if file alread exists 
@@ -233,7 +233,9 @@ exports.storeFiles = async (req, res) => {
     }
 
     res.send(response);
-
+    } catch (error) {
+        res.send('Internal server error. REFRESH')
+    }
 };
 
 exports.feedFiles = async (req, res) => {
