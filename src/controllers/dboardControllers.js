@@ -234,7 +234,7 @@ exports.storeFiles = async (req, res) => {
 
     res.send(response);
     } catch (error) {
-        res.send('Internal server error. REFRESH')
+        res.status(500).send(error)
     }
 };
 
