@@ -108,10 +108,10 @@ exports.loadTemplates = async(req ,res) => {
 exports.loadHostedTemplates = async(req ,res) => {
     try{
     const stores = await getAllHostedStores();
-    let allStores = {};
+    let allStores = [];
     stores.rows.forEach(store=> {
-        let name = store.name, features = store.features;
-        allStores[name] = features;
+        let name = store.name, features = store.features, type= store.type;
+        allStores.push({store: name, features: features, type: type});
     
     });
     // res.send(allStores[0]);
@@ -190,27 +190,32 @@ exports.createProject = async (req, res) => {
 
 exports.storeFiles = async (req, res) => {
     const uid = req.query.uid;
-    const storename = req.params.storename;
+    let storename = req.params.storename;
     let response = {};
     for(const [key, value] of Object.entries(req.files)) {
-        let keyName = value.name.join('');
+        //Get filename from each value
+        let keyName = value.name.replaceAll(" ", "");
+        console.log(keyName);
         const rootPath = './src/controllers/uploads/';
-        const uploadPath = rootPath + keyName; 
+        const uploadPath = rootPath + keyName;
+        //Check if file alread exists 
         const fileExists = await fileMedia(uid, storename);
-
+        //If file does not exists, upload file name
         if(!fileExists.rows.length) {
             await uploadMedia(uid, storename, keyName, key);
 
         } else {
-
+            //Delete old file from file system if file already exists
             if(fileExists.rows[0].filename === keyName) {
                 const deletePath = rootPath + fileExists.rows[0];
                fs.unlink(deletePath, (err) => {
                 if(err) return
                });
+               //Replace old file with new upload file
                await updateMedia(uid, storename, keyName, key, fileExists.rows[0].filename);
             }
              else {
+                //Upload new file if old file and new files are different
                 await uploadMedia(uid, storename, keyName, key);
             };
 
@@ -335,11 +340,16 @@ exports.addItems = async (req, res) => {
 };
 
 exports.hostStore =async (req, res) => {
-    const store= req.body.store;
+    const {store, type}= req.body;
+
     try {
-     await updateStoreStatus(store);
-        res.send("Store has been successfully hosted")
+     const update = await updateStoreStatus(store, type);
+     if(update.rows.length){
+        res.send("Store has  successfully hosted")
+     } else {
+        res.status(401).send("Store does not exists!... Save store first")
+     }
     } catch(error) {
-        res.send("Store does not exists!... Save store first")
+        res.send(error);
     }
 };

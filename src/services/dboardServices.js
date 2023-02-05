@@ -48,10 +48,10 @@ exports.getStore = (name) => {
 };
 
 exports.getAllHostedStores = () => {
-   return pool.query(`WITH storeinfos AS (SELECT * FROM storeinfo WHERE hosted = true),
-   stores AS (SELECT * FROM store, storeinfos WHERE store.id = storeinfos.storeid)
-   SELECT stores.name, storeinfos.features FROM storeinfos, stores`)
-}
+   return pool.query(`WITH storeinfos AS (SELECT * FROM storeinfo WHERE hosted = true)
+   SELECT store.name, storeinfos.features, storeinfos.type FROM storeinfos, store
+   WHERE storeinfos.storeid = store.id`)
+};
 
 exports.getstoreInfo = (uid) =>{
    return pool.query(
@@ -107,9 +107,9 @@ exports.exportMedia = (uid) => {
 //    }
 // };
 
-exports.updateStoreStatus = (name)=> {
+exports.updateStoreStatus = (name, type)=> {
    return pool.query(`  WITH store AS (SELECT * FROM store WHERE name = $1)
-   UPDATE storeinfo SET hosted = true WHERE storeid= (SELECT id FROM store)`, [name])
+   UPDATE storeinfo SET hosted = true, type = $2 WHERE storeid= (SELECT id FROM store) returning *`, [name, type])
 };
 
 exports.addView = (storename) => {
