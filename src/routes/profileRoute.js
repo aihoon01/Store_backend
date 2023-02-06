@@ -28,9 +28,9 @@ proRouter.get('/hstores', loadHostedTemplates)
 proRouter.get('/dashboard/projects/:cat', checkNotAuthenticated, getProjectByCat);
 
 //Users Personalized templates
-proRouter.get('/dashboard/project/:tid', checkNotAuthenticated, getProject);
-proRouter.post('/dashboard/project/:tid', checkNotAuthenticated, store, createProject);
-proRouter.put('/dashboard/project/:tid', checkNotAuthenticated, editProject);
+// proRouter.get('/dashboard/project/:tid', checkNotAuthenticated, getProject);
+// proRouter.post('/dashboard/project/:tid', checkNotAuthenticated, store, createProject);
+// proRouter.put('/dashboard/project/:tid', checkNotAuthenticated, editProject);
 
 //Uploading Pictures and Files 
 proRouter.post('/uploads/:storename', storeFiles);
