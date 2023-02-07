@@ -122,11 +122,11 @@ exports.addView = (storename) => {
 
 exports.getVendors = (uid) => {
    return pool.query(`WITH store AS(SELECT * FROM store WHERE userid = $1),
-   vends AS (SELECT vendors.id, vendors.vendor, vendors.commission, vendors.storeid
-   FROM store, vendors WHERE vendors.storeid = store.id),
-  items AS (SELECT items.id, items.size, items.vendorid FROM items JOIN vends ON items.vendorid=vends.id),
-  itemscount AS (SELECT SUM(items.size) AS items FROM items)
-  SELECT vends.vendor AS Vendor, vends.id AS ID, itemscount.items AS Items, vends.commission AS Commission FROM vends, itemscount GROUP BY 1, 2, 3, 4
+   Vendors AS(SELECT vendors.id, vendors.vendor, vendors.commission, vendors.storeid
+   FROM vendors),
+  items AS (SELECT SUM(items.size)AS size, items.vendorid FROM items GROUP BY 2)
+  SELECT vendors.id, vendors.vendor, vendors.commission, items.size AS items FROM store, vendors, items 
+  WHERE store.id= vendors.storeid  AND items.vendorid=vendors.id
    `, [uid])
 };
 

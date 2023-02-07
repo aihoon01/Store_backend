@@ -12,7 +12,7 @@ exports.storeAnalytics = async(req, res) => {
     let overview= {
         summary : insights.rows[0],
         
-        vendors: vendors.rows[0]
+        vendors: vendors.rows
 
 };
 
@@ -117,7 +117,7 @@ exports.loadHostedTemplates = async(req ,res) => {
     // res.send(allStores[0]);
     res.json(allStores)
 } catch(error) {
-    res.send(error);
+    res.status(500).send(error);
 }
 };
 
@@ -308,33 +308,32 @@ exports.getFile = async (req, res) => {
 exports.addVendor = async (req, res, next) => {
     let {uid }= req.query,
     {storename} = req.params,
-    {item, commission, vendor} = req.body;
+    {commission, vendor} = req.body;
 
     const vendorExists = await getVendor(vendor);
     if(!vendorExists.rows.length) {
-        await addVendorDetails(uid, storename, commission);
-        next()
+        await addVendorDetails(uid, storename, vendor, commission);
+    res.send("Vendor details added succesfully");
+
     } else {
         res.status(404).send('Vendor already exists')
     }
-
 };
 
 exports.addItems = async (req, res) => {
      let {uid }= req.query,
     {storename} = req.params,
     {item, vendor}= req.body;
-
     let itemName = item.name,
     itemPrice = item.price,
     itemSize = item.size;
     try {
     await addItemsDetails(uid, storename, vendor, itemName, itemSize, itemPrice);
-    } catch(error) {
-        res.send(404).send("Couldn't add Item")
-    }
 
-    res.status(201).send("Vendor and Items successfully added");
+    res.status(201).send("Items successfully added");
+    } catch(error) {
+        res.status(403).send("Couldn't add Item")
+    }
 
 };
 

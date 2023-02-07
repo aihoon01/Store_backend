@@ -21,11 +21,12 @@ proRouter.put('/dashboard/projects', hostStore);
 proRouter.get('/dashboard/projects', loadTemplates); // checkNotAuthenticated
 proRouter.delete('/dashboard/projects', deleteStore, loadTemplates); // checkNotAuthenticated
 proRouter.get('/store/:name', templateInsights); //checkNotAuthenticated
-proRouter.post('/vendors/:storename', addVendor, addItems); //checkNotAuthenticated
-proRouter.get('/hstores', loadHostedTemplates)
+proRouter.post('/vendors/:storename', addVendor); //checkNotAuthenticated
+proRouter.put('/vendors/:storename',  addItems);
+proRouter.get('/hstores', loadHostedTemplates);
 
 //Options by Category for users to choose from
-proRouter.get('/dashboard/projects/:cat', checkNotAuthenticated, getProjectByCat);
+// proRouter.get('/dashboard/projects/:cat', checkNotAuthenticated, getProjectByCat);
 
 //Users Personalized templates
 // proRouter.get('/dashboard/project/:tid', checkNotAuthenticated, getProject);
