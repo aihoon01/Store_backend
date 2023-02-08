@@ -173,3 +173,19 @@ exports.addItemsDetails = (uid, storename, vendor, itemName, itemSize, itemPrice
    vends AS (SELECT vendors.id FROM vendors, store WHERE vendors.storeid = store.id AND vendor=$3)
    INSERT INTO items (name, size, price, vendorid) VALUES($4, $5, $6, (SELECT id FROM vends)) returning *`, [uid, storename, vendor, itemName, itemSize, itemPrice])
 };
+
+exports.getCartDetails = (uid, name) => {
+   return pool.query(`SELECT * FROM cart WHERE id = $1  AND name =$2`, [uid, name])
+};
+
+exports.addCartDetails = (uid, name, salePrice, price, quantity) => {
+   return pool.query(`INSERT INTO cart (id, name, salePrice, price, quantity) VALUES ($1, $2, $3, $4, $5)returning *`, [uid, name, salePrice, price, quantity]);
+};
+
+exports.getAllCarts = (uid) => {
+   return pool.query(`SELECT * FROM cart WHERE id = $1 `, [uid])
+};
+
+exports.updateCartDetails = (salePrice, price, quantity, uid, name) => {
+   return pool.query(`UPDATE cart SET salePrice=$1, price=$2, quantity=$3 WHERE uid=$4 AND name= $5 returning *`, [salePrice, price, quantity, uid, name])
+};

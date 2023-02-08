@@ -63,6 +63,14 @@ CREATE TABLE Media(
     label VARCHAR(200) NOT NULL
 ); 
 
+CREATE TABLE cart (
+    id REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    name VARCHAR(100) UNIQUE
+    salePrice INT,
+    price INT,
+    quantity INT
+);
+
 -- INSERT INTO templates(name, image, category)
 -- VALUES ('blog_1', '/images/blog_1.png', 'blog'), 
 -- ('blog_2', '/images/blog_2.png', 'blog'),

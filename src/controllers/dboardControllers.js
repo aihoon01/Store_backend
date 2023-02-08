@@ -1,6 +1,8 @@
 const { transporter } = require("../config/mailConfig");
-const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView, addVendorDetails, getVendor, addItemsDetails, updateStoreStatus, getAllHostedStores } = require("../services/dboardServices");
+const { getProjects, getTemplate, editTemplate, getTemplateByCat, createTemplate, createStore, getStore, addToStore, getstoreInfo, deleteTemplate, updateUserInfo, importMedia, exportMedia, getVendors, detailedInsights, fileMedia, uploadMedia, updateMedia, addView, addVendorDetails, getVendor, addItemsDetails, updateStoreStatus, getAllHostedStores, getCartDetails, updateCartDetails } = require("../services/dboardServices");
 const fs = require('fs');
+const { isProductInCart, calculateTotal } = require("../helpers/sys");
+const { getUserByEmail } = require("../services/userServices");
 require("dotenv").config();
 
 
@@ -43,9 +45,19 @@ exports.updateProfile = async(req, res) => {
     let {firstname, business, email, contact, location } = req.body;
     // name=name.split(" ");
     const emailCheck = await getUserByEmail(email);
-    if (emailCheck.rows.length) {
-    res.status(403).send('Email already exists'); 
-    } else {
+    if (emailCheck.rows.length < 1) {
+        const updatedUser=  await updateUserInfo(firstname, business, email, contact, location, uid);
+         const details = updatedUser.rows[0];
+    let user = {
+    id: details.id,
+    firstname: details.firstname,
+    business: details.bname,
+    email: details.email,
+    location: details.location,
+    contact: details.contact 
+    }
+    res.json(user);
+} else if (emailCheck.rows[0].id === uid) {
    const updatedUser=  await updateUserInfo(firstname, business, email, contact, location, uid);
    const details = updatedUser.rows[0];
    let user = {
@@ -55,10 +67,17 @@ exports.updateProfile = async(req, res) => {
     email: details.email,
     location: details.location,
     contact: details.contact
-}
- res.json(user);
+} 
+    
+    res.json(user);
+
+} else {
+    if (emailCheck.rows[0].email) 
+    res.status(403).send('Email already exists'); 
 }
 } catch (error) {
+    console.log(error)
+    // res.send(error)
     res.status(500).send('Internal server error');
 };
 };
@@ -350,4 +369,27 @@ exports.hostStore =async (req, res) => {
     } catch(error) {
         res.send(error);
     }
+};
+
+exports.addToCart = async (req, res) => {
+    let {uid} = req.query;
+    let {salePrice, price, quantity, name} = req.body;
+   try{
+    const products = getCartDetails(uid, name)
+    if (products.rows.length) {
+    const cart = await updateCartDetails(salePrice, price, quantity, uid, name);
+    res.send(cart)
+    } else {
+        const cart = await addCartDetails(uid, name, salePrice, price, quantity);
+        res.send(cart)
+    }
+    
+   }catch(error) {
+    res.status(500).send("internal server error");
+   }
+};
+
+exports.getAllCarts = async(req, res) => {
+    let {uid} = req.query;
+    const cart = await getCartDetails(uid);
 };
